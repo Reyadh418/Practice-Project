@@ -59,7 +59,26 @@ int main()
 
         else if (operation == 2)
         {
+            printf("\nYou can only subtract two numbers at a time.\n");
+            int a, b;
+            printf("\nEnter your first value:\t");
+            scanf("%d", &a);
+
+            printf("\nEnter your second value:\t");
+            scanf("%d", &b);
             
+            if (a < b)
+            {
+                result = b - a;
+            }
+            else
+            {
+                result = a - b;
+            }
+            
+            printf("\nYour result is: %d", result);
+
+            goto main_menu;
         }
     }
 }
