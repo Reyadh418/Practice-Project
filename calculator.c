@@ -131,5 +131,33 @@ int main()
                 goto main_menu;
             }
         }// Multiplication End
+
+        else if (operation == 4) //Division
+        {
+            printf("\nYou can only divide two numbers at a time.\n");
+            float a, b, div_result;
+            printf("\nEnter your first value:\t");
+            scanf("%f", &a);
+
+            printf("\nEnter your second value:\t");
+            scanf("%f", &b);
+            
+            if (b == 0)
+            {
+                printf("\nError: Division by zero is undefined.\n");
+            }
+            else
+            {
+                div_result = a / b;
+                printf("\nYour result is: %.3f", div_result);
+            }
+
+            printf("\n\nDo you want to go back to main menu? (1 for Yes / 2 for No):\t");
+            scanf("%d", &back_to_menu);
+            if (back_to_menu == 1)
+            {
+                goto main_menu;
+            }
+        }//Division End
     }// main_menu loop
 } //main
