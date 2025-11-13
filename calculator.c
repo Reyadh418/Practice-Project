@@ -32,7 +32,7 @@ int main()
 
             printf("Choice:\t");
             scanf("%d", &operation);
-        } while (operation < 1 || operation > 12);
+        } while (operation < 1 || operation > 21);
         
 
         if (operation == 1) //Addition
