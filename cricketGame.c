@@ -35,8 +35,8 @@ int main()
 
     printf("Time for the rules:\n\n");
     printf("The rules are simple. You will choose a number between 1 and 6 while computer will generate a random number too.\n");
-    printf("1. If you and computer choose the same number, it's a wicket. Otherwise the chosen number adds to the batting side.\n");
-    printf("2. Choosing 0 during batting is allowed. It will count as a dot ball.\n");
+    printf("1. If you and computer choose the same number, it's a wicket. \nOtherwise the chosen number adds to the batting side.\n");
+    printf("2. Choosing 0 during batting is allowed. \nIt will count as a dot ball.\n");
     printf("3. Choosing 0 during balling is not allowed.\n");
 
     sleep(0.5);
