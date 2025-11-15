@@ -349,9 +349,9 @@ int userScorecard2()
 //Batiing 2nd scorecard for computer
 int comScorecard2()
 {
-    //over count
+    //over count. current over
     o = ball / 6;
-    //Running ball count
+    //Running ball count. current ball in the over
     b = ball % 6;
     
     remaining_run = (user_total_run - com_total_run) + 1;
@@ -364,7 +364,7 @@ int comScorecard2()
     printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
 }
 
-// Determining results
+// Determining results. And giving suggestions based on difficulty level
 int results()
 {
     if (user_total_run > com_total_run)
@@ -411,7 +411,7 @@ int results()
     }
 }
 
-//Function to play superover
+//Function to play superover, an additional over to decide the winner in case of a tie
 int superover()
 {
     user_total_run = 0;
