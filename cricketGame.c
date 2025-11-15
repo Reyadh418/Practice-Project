@@ -27,10 +27,10 @@ int main()
 {
 
     //For the random number selection
-    srand(time(0));
+    srand(time(0));//universal(global declaration)
 
     //Welcome Part
-    printf("Welcome to our game.\n This is a cricket game trying to simulate our childhood nostalgia, Head or Tails game.\n");
+    printf("Welcome to our game.\n This is a cricket game trying to simulate our childhood nostalgia, Finger Cricket game.\n");
     sleep(0.5);
 
     printf("Time for the rules:\n\n");
