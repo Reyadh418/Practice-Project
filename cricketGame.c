@@ -310,9 +310,12 @@ int userScorecard1()
     //Running ball count
     b = ball % 6;
 
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    printf("Score: %d - %d  overs: %d.%d\n", user_total_run, user_total_wicket, o, b);
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n+----------------------------------+\n");
+    printf("|   YOU BATTING FIRST SCORECARD    |\n");
+    printf("+----------------------------------+\n");
+    printf("|  Score  |  %3d / %-2d              |\n", user_total_run, user_total_wicket);
+    printf("|  Overs  |   %d.%d                  |\n", o, b);
+    printf("+----------------------------------+\n\n");
 }
 
 //Batting 1st scorecard for computer
@@ -323,9 +326,12 @@ int comScorecard1()
     //Running ball count
     b = ball % 6;
 
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    printf("Score: %d - %d  overs: %d.%d\n", com_total_run, com_total_wicket, o, b);
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n+----------------------------------+\n");
+    printf("| COMPUTER BATTING FIRST SCORECARD  |\n");
+    printf("+-----------------------------------+\n");
+    printf("|  Score  |  %3d / %-2d               |\n", com_total_run, com_total_wicket);
+    printf("|  Overs  |   %d.%d                   |\n", o, b);
+    printf("+----------------------------------+\n\n");
 }
 
 //Batiing 2nd scorecard for user
@@ -339,11 +345,14 @@ int userScorecard2()
     remaining_run = (com_total_run - user_total_run) + 1;
     remaining_ball = max_balls - ball;
 
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    printf("Score: %d - %d  overs: %d.%d\n", user_total_run, user_total_wicket, o, b);
-    printf("Target: %d\n", (com_total_run + 1));
-    printf("Need %d more runs from %d balls.\n", remaining_run, remaining_ball);
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n+----------------------------------+\n");
+    printf("|        YOU CHASING TARGET        |\n");
+    printf("+----------------------------------+\n");
+    printf("|  Score  |  %3d / %-2d              |\n", user_total_run, user_total_wicket);
+    printf("|  Overs  |   %d.%d                  |\n", o, b);
+    printf("|  Target |  %3d                   |\n", (com_total_run + 1));
+    printf("|  Need   |  %3d runs / %3d balls  |\n", remaining_run, remaining_ball);
+    printf("+----------------------------------+\n\n");
 }
 
 //Batiing 2nd scorecard for computer
@@ -357,55 +366,78 @@ int comScorecard2()
     remaining_run = (user_total_run - com_total_run) + 1;
     remaining_ball = max_balls - ball;
 
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    printf("Score: %d - %d  overs: %d.%d\n", com_total_run, com_total_wicket, o, b);
-    printf("Target: %d\n", (user_total_run + 1));
-    printf("Need %d more runs from %d balls.\n", remaining_run, remaining_ball);
-    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+    printf("\n+----------------------------------+\n");
+    printf("|     COMPUTER CHASING TARGET      |\n");
+    printf("+----------------------------------+\n");
+    printf("|  Score  |  %3d / %-2d              |\n", com_total_run, com_total_wicket);
+    printf("|  Overs  |   %d.%d                  |\n", o, b);
+    printf("|  Target |  %3d                   |\n", (user_total_run + 1));
+    printf("|  Need   |  %3d runs / %3d balls  |\n", remaining_run, remaining_ball);
+    printf("+----------------------------------+\n\n");
 }
 
 // Determining results. And giving suggestions based on difficulty level
 int results()
 {
+    int run_margin = abs(user_total_run - com_total_run);
+    int user_wkts_left = max_wickets - user_total_wicket;
+    int com_wkts_left = max_wickets - com_total_wicket;
+
+    printf("\n+============================================+\n");
+    printf("|                MATCH RESULT                |\n");
+    printf("+============================================+\n");
+    printf("|  Final: YOU %3d/%-2d  vs  COM %3d/%-2d         |\n", user_total_run, user_total_wicket, com_total_run, com_total_wicket);
+    printf("+--------------------------------------------+\n");
+
     if (user_total_run > com_total_run)
     {
-        printf("Congratulations!! You won the match.\n");
+        printf("|  Outcome: YOU WIN!                          |\n");
+        printf("|  Margin : %3d run %s                        |\n", run_margin, run_margin == 1 ? "" : "s");
+        printf("|  Wkts in hand: %2d                          |\n", user_wkts_left);
+        printf("+--------------------------------------------+\n");
 
         if (difficulty == 1)
         {
-            printf("Try playing Medium difficulty. Or even Hard difficulty.\n");
+            printf("|  Tip: Try Medium or Hard next.             |\n");
         }
         else if (difficulty == 2)
         {
-            printf("Try playing Hard difficulty.\n");
+            printf("|  Tip: Step up to Hard.                    |\n");
         }
         else
         {
-            printf("You're the master of the game. Keep winning.\n");
+            printf("|  Tip: You're mastering it—keep going!     |\n");
         }
+        printf("+============================================+\n");
     }
 
     else if (user_total_run < com_total_run)
     {
-        printf("Alas!! You lost the match.\n");
+        printf("|  Outcome: YOU LOSE.                        |\n");
+        printf("|  Margin : %3d run%s                         |\n", run_margin, run_margin == 1 ? "" : "s");
+        printf("|  Opp. wkts left: %2d                        |\n", com_wkts_left);
+        printf("+--------------------------------------------+\n");
         
         if (difficulty == 3)
         {
-            printf("Try playing Medium or Easy difficulty.\n");
+            printf("|  Tip: Try Medium or Easy next.            |\n");
         }
         else if (difficulty == 2)
         {
-            printf("Try playing Easy difficulty.\n");
+            printf("|  Tip: Drop to Easy for a warm-up.         |\n");
         }
         else
         {
-            printf("Maybe today is you unlucky day. Rest and play later.\n");
+            printf("|  Tip: Rest up and try again.              |\n");
         }
+        printf("+==========================================+\n");
     }
 
     else if (user_total_run == com_total_run)
     {
-        printf("Scores are equal. Superover will be played to decide the winner.\n");
+        printf("|  Outcome: TIED.                            |\n");
+        printf("|  Next   : Super over will decide winner.   |\n");
+        printf("+============================================+\n");
 
         superover();
     }

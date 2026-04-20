@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencil Sketch Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 2px dashed #e94560;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ff6b6b;
+        }
+
+        .upload-section.dragover {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .controls.active {
+            display: block;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #333;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e94560;
+            cursor: pointer;
+        }
+
+        .control-value {
+            text-align: right;
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid #e94560;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(233, 69, 96, 0.2);
+        }
+
+        .image-container {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .image-container.active {
+            display: grid;
+        }
+
+        .image-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .image-box h3 {
+            margin-bottom: 15px;
+            color: #e94560;
+        }
+
+        .image-box canvas,
+        .image-box img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden-canvas {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .upload-section {
+                padding: 25px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pencil Sketch Generator</h1>
+        <p class="subtitle">Transform your photos into beautiful pencil sketches</p>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">🎨</div>
+            <p class="upload-text">Click or drag & drop an image here</p>
+            <p class="upload-hint">Supports JPG, PNG, GIF, WebP</p>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="controls" id="controls">
+            <div class="control-group">
+                <label>Blur Intensity: <span class="control-value" id="blurValue">3</span></label>
+                <input type="range" id="blurSlider" min="1" max="10" value="3">
+            </div>
+            <div class="control-group">
+                <label>Brightness: <span class="control-value" id="brightnessValue">0</span></label>
+                <input type="range" id="brightnessSlider" min="-50" max="50" value="0">
+            </div>
+            <div class="control-group">
+                <label>Contrast: <span class="control-value" id="contrastValue">0</span></label>
+                <input type="range" id="contrastSlider" min="-50" max="50" value="0">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="processBtn">Generate Sketch</button>
+                <button class="btn btn-secondary" id="downloadBtn">Download Sketch</button>
+                <button class="btn btn-secondary" id="resetBtn">Upload New Image</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Creating your pencil sketch...</p>
+        </div>
+
+        <div class="image-container" id="imageContainer">
+            <div class="image-box">
+                <h3>Original Image</h3>
+                <img id="originalImage" alt="Original">
+            </div>
+            <div class="image-box">
+                <h3>Pencil Sketch</h3>
+                <canvas id="sketchCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden canvases for processing -->
+    <canvas id="tempCanvas1" class="hidden-canvas"></canvas>
+    <canvas id="tempCanvas2" class="hidden-canvas"></canvas>
+
+    <script>
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const controls = document.getElementById('controls');
+        const imageContainer = document.getElementById('imageContainer');
+        const originalImage = document.getElementById('originalImage');
+        const sketchCanvas = document.getElementById('sketchCanvas');
+        const loading = document.getElementById('loading');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        const blurSlider = document.getElementById('blurSlider');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const blurValue = document.getElementById('blurValue');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const contrastValue = document.getElementById('contrastValue');
+
+        let currentImage = null;
+
+        // Event Listeners
+        uploadSection.addEventListener('click', () => fileInput.click());
+        
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImage(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImage(file);
+            }
+        });
+
+        blurSlider.addEventListener('input', () => {
+            blurValue.textContent = blurSlider.value;
+        });
+
+        brightnessSlider.addEventListener('input', () => {
+            brightnessValue.textContent = brightnessSlider.value;
+        });
+
+        contrastSlider.addEventListener('input', () => {
+            contrastValue.textContent = contrastSlider.value;
+        });
+
+        processBtn.addEventListener('click', () => {
+            if (currentImage) {
+                createPencilSketch(currentImage);
+            }
+        });
+
+        downloadBtn.addEventListener('click', downloadSketch);
+
+        resetBtn.addEventListener('click', () => {
+            uploadSection.style.display = 'block';
+            controls.classList.remove('active');
+            imageContainer.classList.remove('active');
+            fileInput.value = '';
+            currentImage = null;
+        });
+
+        function handleImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    currentImage = img;
+                    originalImage.src = e.target.result;
+                    uploadSection.style.display = 'none';
+                    controls.classList.add('active');
+                    createPencilSketch(img);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function createPencilSketch(img) {
+            loading.classList.add('active');
+            imageContainer.classList.remove('active');
+
+            setTimeout(() => {
+                const blurAmount = parseInt(blurSlider.value);
+                const brightness = parseInt(brightnessSlider.value);
+                const contrast = parseInt(contrastSlider.value);
+
+                const width = img.width;
+                const height = img.height;
+
+                // Set up canvases
+                const ctx = sketchCanvas.getContext('2d');
+                const tempCanvas1 = document.getElementById('tempCanvas1');
+                const tempCanvas2 = document.getElementById('tempCanvas2');
+                const tempCtx1 = tempCanvas1.getContext('2d');
+                const tempCtx2 = tempCanvas2.getContext('2d');
+
+                sketchCanvas.width = width;
+                sketchCanvas.height = height;
+                tempCanvas1.width = width;
+                tempCanvas1.height = height;
+                tempCanvas2.width = width;
+                tempCanvas2.height = height;
+
+                // Draw original image
+                tempCtx1.drawImage(img, 0, 0);
+                
+                // Get image data
+                let imageData = tempCtx1.getImageData(0, 0, width, height);
+                let data = imageData.data;
+
+                // Convert to grayscale
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    data[i] = data[i + 1] = data[i + 2] = gray;
+                }
+                tempCtx1.putImageData(imageData, 0, 0);
+
+                // Create inverted copy
+                tempCtx2.drawImage(tempCanvas1, 0, 0);
+                let invertedData = tempCtx2.getImageData(0, 0, width, height);
+                let invData = invertedData.data;
+                
+                for (let i = 0; i < invData.length; i += 4) {
+                    invData[i] = 255 - invData[i];
+                    invData[i + 1] = 255 - invData[i + 1];
+                    invData[i + 2] = 255 - invData[i + 2];
+                }
+                tempCtx2.putImageData(invertedData, 0, 0);
+
+                // Apply Gaussian blur to inverted image
+                tempCtx2.filter = `blur(${blurAmount}px)`;
+                tempCtx2.drawImage(tempCanvas2, 0, 0);
+                tempCtx2.filter = 'none';
+
+                // Get blurred inverted data
+                let blurredData = tempCtx2.getImageData(0, 0, width, height);
+                let blurred = blurredData.data;
+
+                // Get grayscale data again
+                let grayData = tempCtx1.getImageData(0, 0, width, height);
+                let gray = grayData.data;
+
+                // Color dodge blend
+                let resultData = ctx.createImageData(width, height);
+                let result = resultData.data;
+
+                for (let i = 0; i < gray.length; i += 4) {
+                    for (let j = 0; j < 3; j++) {
+                        const base = gray[i + j];
+                        const blend = blurred[i + j];
+                        
+                        // Color dodge formula
+                        let value;
+                        if (blend === 255) {
+                            value = 255;
+                        } else {
+                            value = Math.min(255, (base * 256) / (256 - blend));
+                        }
+                        
+                        // Apply brightness and contrast
+                        value = value + brightness;
+                        value = ((value - 128) * (1 + contrast / 100)) + 128;
+                        value = Math.max(0, Math.min(255, value));
+                        
+                        result[i + j] = value;
+                    }
+                    result[i + 3] = 255; // Alpha
+                }
+
+                ctx.putImageData(resultData, 0, 0);
+
+                loading.classList.remove('active');
+                imageContainer.classList.add('active');
+            }, 100);
+        }
+
+        function downloadSketch() {
+            const link = document.createElement('a');
+            link.download = 'pencil-sketch.png';
+            link.href = sketchCanvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
