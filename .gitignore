@@ -1,10 +1,2 @@
-a.exe
-cricket.exe
-/Practice/a.exe
-/Practice/armstrong.exe
-/Practice/try.exe
-/Practice/nested.exe
-/Practice/sumDigits.exe
-/practice/reverseArray.exe
-/Practice/largestNumber.exe
 *.exe
+*.s
